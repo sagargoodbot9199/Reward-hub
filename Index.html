@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>महा गेमिंग एवं अर्निंग ऐप</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f4f6f9; padding: 15px; display: flex; justify-content: center; }
+        .container { background: #ffffff; width: 100%; max-width: 450px; padding: 15px; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); position: relative; overflow: hidden; height: 680px; display: flex; flex-direction: column; }
+        
+        h2, h3 { text-align: center; color: #222; margin-bottom: 20px; font-weight: 700; }
+        
+        /* Form Styling */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; background: #fafafa; transition: 0.3s; }
+        input:focus { border-color: #007bff; outline: none; background: #fff; }
+        .auth-btn { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .auth-btn:hover { background: #218838; }
+        .switch-link { text-align: center; margin-top: 15px; color: #007bff; cursor: pointer; font-size: 14px; font-weight: 500; }
+
+        /* Hide Screens Initially */
+        #login-box, #main-app-layout, .app-screen { display: none; }
+
+        /* Main App Header */
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px solid #f0f0f0; background: #fff; }
+        
+        /* Wallet Card */
+        .wallet-card { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; padding: 15px; border-radius: 16px; text-align: center; margin: 15px 0; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); }
+        .balance { font-size: 28px; font-weight: 800; margin-top: 5px; }
+        
+        /* Active Screen Content Area */
+        .content-area { flex: 1; overflow-y: auto; padding-bottom: 20px; padding-right: 2px; }
+        .section-title { font-size: 16px; color: #1e293b; font-weight: 700; margin: 15px 0 12px 2px; border-left: 4px solid #ec4899; padding-left: 8px; }
+        
+        /* Card Items Layout */
+        .task-list { display: flex; flex-direction: column; gap: 10px; }
+        .app-card { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; background: #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .app-meta { display: flex; align-items: center; gap: 12px; max-width: 70%; }
+        .app-logo { width: 42px; height: 42px; border-radius: 10px; background: #fce7f3; display: flex; align-items: center; justify-content: center; font-size: 20px; min-width: 42px; }
+        .app-details { display: flex; flex-direction: column; }
+        .app-title { font-weight: 700; color: #1e293b; font-size: 14px; }
+        .app-instruction { font-size: 11px; color: #64748b; margin-top: 2px; }
+        .action-btn { width: auto; padding: 8px 12px; background: #ec4899; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; min-width: 85px; text-align: center; }
+        .action-btn:hover { background: #db2777; }
+
+        /* Bottom Navigation Tabs Styling */
+        .bottom-nav { display: flex; justify-content: space-around; background: #ffffff; border-top: 1px solid #e2e8f0; padding: 10px 0; margin-top: auto; }
+        .nav-tab { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: #64748b; cursor: pointer; font-weight: 600; flex: 1; transition: 0.2s; }
+        .nav-tab span { font-size: 20px; margin-bottom: 2px; }
+        .nav-tab.active { color: #4f46e5; }
+
+        /* Scratch Card Feature UI */
+        .scratch-box { background: #e0e7ff; height: 100px; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 2px dashed #4f46e5; font-weight: bold; color: #4f46e5; cursor: pointer; margin-bottom: 10px; }
+
+        /* History Table UI */
+        .history-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+        .h-success { color: #16a34a; font-weight: bold; }
+        .h-minus { color: #dc2626; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div id="signup-box">
+        <h2>नया खाता बनाएं</h2>
+        <form id="signup-form">
+            <div class="form-group">
+                <label>पूरा नाम:</label>
+                <input type="text" id="signup-name" required placeholder="अपना नाम डालें">
+            </div>
+            <div class="form-group">
+                <label>मोबाइल नंबर:</label>
+                <input type="tel" id="signup-phone" required placeholder="अपना नंबर डालें">
+            </div>
+            <div class="form-group">
+                <label>सुरक्षित पासवर्ड बनाएं:</label>
+                <input type="password" id="signup-password" required placeholder="न्यूनतम 6 अंक/अक्षर">
+            </div>
+            <button type="submit" class="auth-btn">साइनअप करें और ₹20 पाएं</button>
+        </form>
+        <div class="switch-link" id="go-to-login">पहले से अकाउंट है? लॉगइन करें</div>
+    </div>
+
+    <div id="login-box">
+        <h2>अकाउंट लॉगइन</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label>पंजीकृत मोबाइल नंबर:</label>
+                <input type="tel" id="login-phone" required placeholder="अपना नंबर डालें">
+            </div>
+            <div class="form-group">
+                <label>पासवर्ड दर्ज करें:</label>
+                <input type="password" id="login-password" required placeholder="अपना पासवर्ड डालें">
+            </div>
+            <button type="submit" class="auth-btn" style="background: #4f46e5;">लॉगइन करें</button>
+        </form>
+        <div class="switch-link" id="go-to-signup">नया अकाउंट बनाना है? साइनअप करें</div>
+    </div>
+
+    <div id="main-app-layout" style="height: 100%; display: flex; flex-direction: column;">
+        
+        <div class="app-header">
+            <h4 style="color: #1e293b;">नमस्ते, <span id="user-name">यूजर</span>! 👋</h4>
+            <button onclick="logout()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer; font-size:13px;">🚪 लॉगआउट</button>
+        </div>
+        
+        <div class="wallet-card">
+            <div>आपका कुल बैलेंस</div>
+            <div class="balance"><span id="coin-balance">2,000</span> Coins</div>
+            <div style="font-size: 13px; margin-top: 4px; opacity: 0.9;">(100 Coins = ₹1 | वर्तमान मूल्य = ₹<span id="cash-balance">20</span>)</div>
+        </div>
+
+        <div class="content-area">
+
+            <div id="screen-tasks" class="app-screen" style="display: block;">
+                <div class="section-title">🎁 डेली बोनस और वीडियो टास्क</div>
+                <div class="task-list">
+                    <div class="app-card" style="border-left:4px solid #f59e0b;">
+                        <div class="app-meta">
+                            <div class="app-logo">📅</div>
+                            <div class="app-details"><span class="app-title">डेली चेक-इन रिवॉर्ड</span><span class="app-instruction">रोज़ ऐप खोलें और बोनस क्लेम करें</span></div>
+                        </div>
+                        <button class="action-btn" style="background:#f59e0b;" onclick="claimDaily()">क्लेम करें</button>
+                    </div>
+                </div>
+
+                <div class="section-title">💥 स्क्रैच कार्ड (किस्मत आजमाएं)</div>
+                <div class="scratch-box" id="scratch-card-element" onclick="scratchCard()">👋 कार्ड स्क्रैच करने के लिए यहाँ क्लिक करें!</div>
+
+                <div class="section-title">📺 वीडियो देखें और कमाएं (Watch Videos)</div>
+                <div class="task-list">
+                    <div class="app-card">
+                        <div class="app-meta">
+                            <div class="app-logo">🎬</div>
+                            <div class="app-details"><span class="app-title">वीडियो एडवरटाइजमेंट #1</span><span class="app-instruction">30 सेकंड का वीडियो देखें</span></div>
+                        </div>
+                        <button class="action-btn" onclick="watchVideo('वीडियो विज्ञापन #1', 500)">देखें +500</button>
+                    </div>
+                    <div class="app-card">
+                        <div class="app-meta">
+                            <div class="app-logo">🎬</div>
+                            <div class="app-details"><span class="app-title">वीडियो एडवरटाइजमेंट #2</span><span class="app-instruction">शॉर्ट वीडियो विज्ञापन देखें</span></div>
+                        </div>
+                        <button class="action-btn" onclick="watchVideo('वीडियो विज्ञापन #2', 500)">देखें +500</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="screen-games" class="app-screen">
+                <div class="section-title">🕹️ प्ले 50 मेगा गेम्स ज़ोन</div>
+                <div class="task-list" id="games-container">
+                    </div>
+            </div>
+
+            <div id="screen-withdraw" class="app-screen">
+                <div class="section-title">💰 मनी EXCHANGE / विड्रॉल सेंटर</div>
+                <form id="withdraw-form" style="padding: 5px;">
+                    <div class="form-group">
+                        <label>पेमेंट का माध्यम:</label>
+                        <select id="payment-method" required>
+                            <option value="UPI">UPI ID (Google Pay / PhonePe / Paytm UPI)</option>
+                            <option value="Paytm Wallet">Paytm Wallet मोबाइल नंबर</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>पेमेंट डिटेल्स डालें:</label>
+                        <input type="text" id="payment-details" required placeholder="UPI ID या 10 अंकों का नंबर">
+                    </div>
+                    <div class="form-group">
+                        <label>एक्सचेंज करने के लिए Coins डालें:</label>
+                        <input type="number" id="withdraw-amount" required min="500" placeholder="कम से कम 500 Coins (₹5)">
+                    </div>
+                    <button type="submit" class="auth-btn" style="background: #ea580c;">पैसे बैंक में ट्रांसफर करें</button>
+                </form>
+            </div>
+
+            <div id="screen-history" class="app-screen">
+                <div class="section-title">📜 आपकी पूरी ट्रांजैक्शन हिस्ट्री</div>
+                <div id="history-container" style="background:#fff; border-radius:12px; border:1px solid #e2e8f0;">
+                    </div>
+            </div>
+
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-tab active" id="tab-tasks" onclick="switchTab('tasks')"><span>🎁</span>टास्क</div>
+            <div class="nav-tab" id="tab-games" onclick="switchTab('games')"><span>🎮</span>गेम्स (50)</div>
+            <div class="nav-tab" id="tab-withdraw" onclick="switchTab('withdraw')"><span>💰</span>विड्रॉल</div>
+            <div class="nav-tab" id="tab-history" onclick="switchTab('history')"><span>📜</span>हिस्ट्री</div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // 💰 ग्लोबल डेटाबेस स्टेट - यहाँ हमने शुरुआती कॉइन्स 2000 (यानी ₹20) सेट कर दिए हैं!
+    let currentCoins = 2000; 
+    let userData = null; 
+    let transactionHistory = [
+        { details: "वेलकम बोनस (साइनअप)", amount: "+2,000", type: "add" }
+    ];
+
+    // 🎮 50 अर्निंग गेम्स का डेटाबेस
+    const gamesList = [
+        { name: "लकी स्पिन व्हील (Lucky Spin)", icon: "🎯", reward: 1500 },
+        { name: "ब्लॉक पहेली (Block Puzzle)", icon: "🧱", reward: 2000 },
+        { name: "स्पीड कार रेसर (Speed Racer)", icon: "🏎️", reward: 3000 },
+        { name: "फ्रूट कटर (Fruit Slasher)", icon: "🍉", reward: 1800 },
+        { name: "बबल शूटर KING (Bubble Shooter)", icon: "🔮", reward: 2200 },
+        { name: "लूडो एक्सप्रेस (Ludo Express)", icon: "🎲", reward: 4500 },
+        { name: "चाकू मारो (Knife Hit Master)", icon: "🔪", reward: 2500 },
+        { name: "साँप और सीढ़ी (Snakes & Ladders)", icon: "🐍", reward: 3500 },
+        { name: "क्रिकेट लीग (Mini Cricket)", icon: "🏏", reward: 4000 },
+        { name: "सब्ज़ी कटर (Veggie Chop)", icon: "🥕", reward: 1200 },
+        { name: "तीरंदाजी चैंप (Archery King)", icon: "🏹", reward: 2800 },
+        { name: "सड़क रनर (Subway Run)", icon: "🏃", reward: 3200 },
+        { name: "दिमागी सुडोकू (Sudoku Mind)", icon: "🧠", reward: 5000 },
+        { name: "टैप टैप बर्ड (Flappy Bird)", icon: "🐦", reward: 2600 },
+        { name: "कैंडी क्रश धमाका (Candy Match)", icon: "🍬", reward: 2100 },
+        { name: "क्रेजी बास्केटबॉल (Basket Shot)", icon: "🏀", reward: 1900 },
+        { name: "टिक टैक टो (Tic Tac Toe)", icon: "❌", reward: 1000 },
+        { name: "फ्री किक फुटबॉल (Soccer Penalty)", icon: "⚽", reward: 3100 },
+        { name: "मेट्रो सर्फर (Metro Surfers)", icon: "🛹", reward: 2900 },
+        { name: "टॉवर बिल्डर (Tower Stack)", icon: "🏢", reward: 2400 },
+        { name: "एंग्री बर्ड्स अटैक (Sling Shot)", icon: "🦅", reward: 2700 },
+        { name: "गैलेक्सी शूटर (Space Attack)", icon: "🚀", reward: 3800 },
+        { name: "खजाना शिकारी (Treasure Hunt)", icon: "💎", reward: 4200 },
+        { name: "रैपिड टाइपिस्ट (Word Rush)", icon: "⌨️", reward: 1500 },
+        { name: "पूल 8 बॉल (Mini 8-Ball Pool)", icon: "🎱", reward: 4800 },
+        { name: "क्विज शो (G.K. Quiz Master)", icon: "❓", reward: 2000 },
+        { name: "सॉलिटेयर कार्ड्स (Solitaire Classic)", icon: "🃏", reward: 3300 },
+        { name: "ज़ोंबी शिकारी (Zombie Survival)", icon: "🧟", reward: 4100 },
+        { name: "मछली पकड़ो (Catch the Fish)", icon: "🐟", reward: 1700 },
+        { name: "निंजा रन (Ninja Stealth)", icon: "🥷", reward: 3000 },
+        { name: "पियानो टाइल्स (Piano Magic)", icon: "🎹", reward: 2300 },
+        { name: "रंग मिलाओ (Color Flood)", icon: "🎨", reward: 1600 },
+        { name: "मैथ जीनियस (Math Wizard)", icon: "➕", reward: 1400 },
+        { name: "गोल्ड डिगर (Gold Miner)", icon: "⛏️", reward: 3600 },
+        { name: "बक्सा कूद (Box Jumper)", icon: "📦", reward: 1300 },
+        { name: "सुपर बॉलिंग (Bowling Strike)", icon: "🎳", reward: 2800 },
+        { name: "रस्सी काटो (Cut the Rope)", icon: "🪢", reward: 2200 },
+        { name: "शिकारी बिल्ली (Cat Run Chase)", icon: "🐱", reward: 2500 },
+        { name: "फ्लाइंग JET (Jetpack Ride)", icon: "🎒", reward: 3400 },
+        { name: "पार्क योर कार (Drift Parking)", icon: "🅿️", reward: 2700 },
+        { name: "डायमंड मैच 3 (Jewel Blast)", icon: "🔮", reward: 2000 },
+        { name: "हेलीकॉप्टर रेस्क्यू (Chopper Fly)", icon: "🚁", reward: 3900 },
+        { name: "अंडे बचाओ (Save the Eggs)", icon: "🥚", reward: 1800 },
+        { name: "टैंक वारफेयर (Tank Battle)", icon: "🛡️", reward: 4300 },
+        { name: "मेमोरी कार्ड्स (Brain Memory)", icon: "🃏", reward: 2600 },
+        { name: "हंटिंग डक (Duck Shooter)", icon: "🦆", reward: 1900 },
+        { name: "माइनस्वीपर (Classic Sweeper)", icon: "💣", reward: 3200 },
+        { name: "सुपर फ्रॉग (Frogger Cross)", icon: "🐸", reward: 1500 },
+        { name: "अंतर ढूंढो (Find Differences)", icon: "🔍", reward: 2400 },
+        { name: "डिनो रनर (Offline Dino Run)", icon: "🦖", reward: 1700 }
+    ];
+
+    // 🚀 50 गेम्स लोड करना
+    function initGames() {
+        const container = document.getElementById('games-container');
+        container.innerHTML = "";
+        gamesList.forEach((game, idx) => {
+            container.innerHTML += `
+                <div class="app-card" style="border-left: 4px solid #4f46e5;">
+                    <div class="app-meta">
+                        <div class="app-logo">${game.icon}</div>
+                        <div class="app-details">
+                            <span class="app-title">${idx + 1}. ${game.name}</span>
+                            <span class="app-instruction">खेलें और कॉइन्स रिवॉर्ड जीतें</span>
+                        </div>
+                    </div>
+                    <button class="action-btn" onclick="playGame('${game.name}', ${game.reward})">खेलें +${game.reward}</button>
+                </div>
+            `;
+        });
+    }
+
+    // 🔄 स्क्रीन्स स्विच करना
+    function switchTab(screenName) {
+        document.querySelectorAll('.app-screen').forEach(s => s.style.display = 'none');
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        
+        document.getElementById(`screen-${screenName}`).style.display = 'block';
+        document.getElementById(`tab-${screenName}`).classList.add('active');
+
+        if(screenName === 'history') updateHistoryUI();
+    }
+
+    // 💰 वॉलेट अपडेट (अब 2000 कॉइन्स = ₹20 दिखाएगा)
+    function updateWallet() {
+        document.getElementById('coin-balance').textContent = currentCoins.toLocaleString();
+        document.getElementById('cash-balance').textContent = (currentCoins / 100).toFixed(2);
+    }
+
+    // 📜 हिस्ट्री लॉग
+    function logTransaction(details, amount, type) {
+        transactionHistory.unshift({ details, amount, type });
+    }
+
+    function updateHistoryUI() {
+        const container = document.getElementById('history-container');
+        if(transactionHistory.length === 0) {
+            container.innerHTML = `<div style="padding:15px; text-align:center; color:#64748b;">कोई ट्रांजैक्शन रिकॉर्ड नहीं है।</div>`;
+            return;
+        }
+        container.innerHTML = "";
+        transactionHistory.forEach(item => {
+            const styleClass = item.type === 'add' ? 'h-success' : 'h-minus';
+            container.innerHTML += `
+                <div class="history-item">
+                    <span>${item.details}</span>
+                    <span class="${styleClass}">${item.amount}</span>
+                </div>
+            `;
+        });
+    }
+
+    // --- 🔐 साइनअप और लॉगिन सिस्टम लॉजिक ---
+    document.getElementById('signup-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('signup-name').value;
+        const phone = document.getElementById('signup-phone').value;
+        const password = document.getElementById('signup-password').value;
+
+        if(password.length < 6) {
+            alert("पासवर्ड कम से कम 6 अंकों का होना चाहिए!");
+            return;
+        }
+
+        userData = { name, phone, password };
+        currentCoins = 2000; // यहाँ पर नया अकाउंट बनते ही यूजर को ₹20 (2000 कॉइन्स) मिलेंगे!
+        document.getElementById('user-name').textContent = name;
+        updateWallet();
+
+        document.getElementById('signup-box').style.display = 'none';
+        document.getElementById('main-app-layout').style.display = 'flex';
+        alert("बधाई हो! खाता सफलतापूर्वक बन गया है और आपको ₹20 बोनस मिल गया है।");
+    });
+
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const phone = document.getElementById('login-phone').value;
+        const password = document.getElementById('login-password').value;
+
+        if(userData && userData.phone === phone && userData.password === password) {
+            document.getElementById('user-name').textContent = userData.name;
+            updateWallet();
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('main-app-layout').style.display = 'flex';
+            alert(`स्वागत है, ${userData.name}!`);
+        } else {
+            alert("गलत मोबाइल नंबर या पासवर्ड! कृपया दोबारा जाँचें।");
+        }
+    });
+
+    function logout() {
+        document.getElementById('main-app-layout').style.displa
